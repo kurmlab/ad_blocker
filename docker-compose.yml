@@ -1,0 +1,36 @@
+version: '3.4'
+services:
+  ad_blocker:
+    # image: sys41x4/adblocker:adguard-alpine_3.18
+    image: adguard/adguardhome
+    container_name: ad_blocker
+    build:
+      context: .
+      dockerfile: ./dockerfiles/adblocker.adguard.alpine_3.18.dockerfile
+    restart: unless-stopped
+    networks:
+      - ad_and_tracker_block_network
+    env_file:
+      - .env
+    environment:
+      - SERVICE_NAME="ad_blocker"
+    volumes:
+      - ${SOURCE_DIR:-./source}:/opt/adguardhome/work
+      - ${CONFIG_DIR:-./config}:/opt/adguardhome/conf
+    ports:
+      - 53:53/tcp
+      - 53:53/udp
+      - 70:67/udp
+      - 71:68/udp
+      - 8169:80/tcp
+      - 444:443/tcp
+      - 444:443/udp
+      - 3000:3000/tcp
+      - 853:853/tcp
+      - 853:853/udp
+      - 5443:5443/tcp
+      - 5443:5443/udp
+      - 6060:6060/tcp
+
+networks:
+  ad_and_tracker_block_network:
